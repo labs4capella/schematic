@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+    Copyright (c) 2021 Naval Group SA.
+    All right reserved. This program and the accompanying materials are made 
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    Contributors:
+        Obeo - initial API and implementation
+-->
+<?eclipse version="3.0"?>
+<plugin>
+  <extension point="org.eclipse.sirius.componentization">
+    <component class="com.navalgroup.capella.schematic.design.SchematicDesignPlugin$Implementation"
+               id="com.navalgroup.capella.schematic.design"
+	       name="schematic">
+    </component>
+  </extension>
+  <extension
+         point="org.eclipse.gmf.runtime.diagram.ui.editpartProviders">
+      <editpartProvider
+            class="com.navalgroup.capella.schematic.design.images.providers.SchematicEditPartProvider">
+         <Priority
+               name="Highest">
+         </Priority>
+      </editpartProvider>
+   </extension>
+  <extension
+        point="org.eclipse.ui.handlers">
+     <handler
+           class="com.navalgroup.capella.schematic.design.ui.handlers.Rotate90LeftHandler"
+           commandId="com.navalgroup.capella.schematic.design.rotate.90.left">
+     </handler>
+     <handler
+           class="com.navalgroup.capella.schematic.design.ui.handlers.Rotate90RightHandler"
+           commandId="com.navalgroup.capella.schematic.design.rotate.90.right">
+     </handler>
+     <handler
+           class="com.navalgroup.capella.schematic.design.ui.handlers.Rotate180Handler"
+           commandId="com.navalgroup.capella.schematic.design.rotate.180">
+     </handler>
+     <handler
+           class="com.navalgroup.capella.schematic.design.ui.handlers.HorizontalSymmetryHandler"
+           commandId="com.navalgroup.capella.schematic.design.horizontal.symmetry">
+     </handler>
+      <handler
+           class="com.navalgroup.capella.schematic.design.ui.handlers.VerticalSymmetryHandler"
+           commandId="com.navalgroup.capella.schematic.design.vertical.symmetry">
+     </handler>
+     <handler
+           class="com.navalgroup.capella.schematic.design.ui.handlers.BackToInitialPositionHandler"
+           commandId="com.navalgroup.capella.schematic.design.back.to.initial">
+     </handler>
+  </extension>
+  <extension
+        point="org.eclipse.ui.commands">
+     <command
+           id="com.navalgroup.capella.schematic.design.rotate.90.left"
+           name="Rotate 90 degrees left">
+     </command>
+     <command
+           id="com.navalgroup.capella.schematic.design.horizontal.symmetry"
+           name="Horizontal symmetry left">
+     </command>
+      <command
+           id="com.navalgroup.capella.schematic.design.vertical.symmetry"
+           name="Vertical symmetry left">
+     </command>
+     <command
+           id="com.navalgroup.capella.schematic.design.rotate.90.right"
+           name="Rotate 90 degrees right">
+     </command>
+      <command
+           id="com.navalgroup.capella.schematic.design.rotate.180"
+           name="Rotate 180 degrees">
+     </command>
+     <command
+           id="com.navalgroup.capella.schematic.design.back.to.initial"
+           name="Back to initial position">
+     </command>
+  </extension>
+  <extension
+        point="org.eclipse.ui.menus">
+     <menuContribution
+           allPopups="false"
+           locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+        <menu
+              icon="icons/schematic.gif"
+              id="com.navalgroup.capella.schematic.design.menu"
+              label="%schematic.menu.label">
+           <command
+                 commandId="com.navalgroup.capella.schematic.design.rotate.90.left"
+                 icon="icons/rotation90Left.gif"
+                 label="%schematic.action.rotate.90.left.label"
+                 style="push"
+                 tooltip="%schematic.action.rotate.90.left.tooltip">
+           </command>
+           <command
+                 commandId="com.navalgroup.capella.schematic.design.rotate.90.right"
+                 icon="icons/rotation90Right.gif"
+                 label="%schematic.action.rotate.90.right.label"
+                 style="push"
+                 tooltip="%schematic.action.rotate.90.right.label">
+           </command>
+            <command
+                 commandId="com.navalgroup.capella.schematic.design.rotate.180"
+                 icon="icons/rotation180.gif"
+                 label="%schematic.action.rotate.180.label"
+                 style="push"
+                 tooltip="%schematic.action.rotate.180.label">
+           </command>
+           <command
+                 commandId="com.navalgroup.capella.schematic.design.horizontal.symmetry"
+                 icon="icons/horizontalSymmetry.png"
+                 label="%schematic.action.horizontal.symmetry.label"
+                 style="push"
+                 tooltip="%schematic.action.horizontal.symmetry.tooltip">
+           </command>
+           <command
+                 commandId="com.navalgroup.capella.schematic.design.vertical.symmetry"
+                 icon="icons/verticalSymmetry.png"
+                 label="%schematic.action.vertical.symmetry.label"
+                 style="push"
+                 tooltip="%schematic.action.vertical.symmetry.tooltip">
+           </command>
+           <command
+                 commandId="com.navalgroup.capella.schematic.design.back.to.initial"
+                 icon="icons/backToInitialPosition.png"
+                 label="%schematic.action.back.initial.label"
+                 style="push"
+                 tooltip="%schematic.action.back.initial.tooltip">
+           </command>
+           <visibleWhen
+                 checkEnabled="false">
+                 <and>
+                  <with
+                        variable="activeMenuSelection">
+                     <iterate
+                           ifEmpty="false">
+                        <and>
+                           <instanceof
+                                 value="com.navalgroup.capella.schematic.design.images.editparts.AbstractSchematicDNodeContainerEditPart">
+                           </instanceof>
+                           <test
+                                 forcePluginActivation="true"
+                                 property="com.navalgroup.capella.schematic.ui.test.isSchematicEditPart">
+                           </test>
+                        </and>
+                     </iterate>
+                  </with>
+               </and>
+           </visibleWhen>
+        </menu>
+     </menuContribution>
+  </extension>
+     <extension
+         point="org.eclipse.core.expressions.propertyTesters">
+      <propertyTester
+            class="com.navalgroup.capella.schematic.design.ui.property.testers.IsSchematicEditPart"
+            id="fr.obeo.capella.sysml.converters.ui.test.isCapellaModel"
+            namespace="com.navalgroup.capella.schematic.ui.test"
+            properties="isSchematicEditPart"
+            type="java.lang.Object">
+      </propertyTester>
+   </extension>
+</plugin>

@@ -1,0 +1,222 @@
+= Documentation utilisateur du point de vue sur la schématique métier
+Copyright (C) 2021 Naval Group. All Rights Reserved.
+:doctype: book
+:source-highlighter: rouge
+:listing-caption: Listing
+:toc:
+:toclevels: 4
+:sectnums:
+:icons: image
+
+== Définition[[definition]]
+
+Ce point de vue permet d'enrichir le diagramme de PAB de Capella avec trois layers qui :
+
+* affiche les composants physiques avec leurs schématiques métiers,
+* affiche le RTPF dans le label des composants et liens physiques,
+* affiche les valeurs définies par un fichier de configuration dans le label des composants et liens physiques.
+
+
+== Point de vue (viewpoint)[[viewpoint]]
+
+Pour utiliser ce point vue, il faut tout d'abord l'activer avec le menu clic droit sur un *.aird  > _'Viewpoints Selection_'. Une boite de dialogue apparaît avec tous les points de vue disponibles, il faut cocher _'Schematic_'.
+
+image:images/viewpointSelection.png[align="center", pdfwidth='50%']
+
+
+=== Affichage de la schématique métier[[metier]]
+
+Pour activer le layer qui affiche les images métiers dans un PAB, il faut cliquer sur le bouton _'Layers_' de la tabbar du diagramme et choisir _'Schematic Name_'.
+
+image:images/layerSchematic.png[align="center", pdfwidth='50%']
+
+Ainsi, à l'activation de ce layer, un composant physique lié à une image, affichera une image à la place du rectangle de couleur. Seul un composant physique feuille d'un diagramme peut être affiché avec une image.
+
+image:images/exComponentImage.png[align="center", pdfwidth='50%']
+
+==== Où se trouvent les images ?
+
+Chaque utilisateur doit avoir les images sur son disque. En effet, pour une problématique de performance, il est fortement conseillé d'avoir les images sur le même support que celui de Capella.
+
+Les images doivent être contenues dans un projet du workspace. Chaque utilisateur devra avoir le même nom de projet avec la même arborescence d'images à l'intérieur. Dans Capella, on a la possibilité d'importer un projet où qu'il soit sur le disque. Cette action doit être faite une fois par workspace.
+
+Voici un exemple : sur le disque se trouve _'D:/MesImages_' qui est un projet Eclipse qui contient toutes les images. Il faut ensuite l'importer dans le workspace pour que le layer puisse utiliser ces images.
+
+Si les images sont mises à jour sur le réseau, elles devront être recopiées sur le disque de l'utilisateur et le projet du workspace doit être rafraîchi. Les diagrammes seront automatiquement mis à jour à leur prochaine ouverture.
+
+Pour importer le projet contenant les images, il faut aller dans le menu _'File > Import... > General > Existing Projects into workspace > Next_'. Ensuite, il faut sélectionner le projet sur le disque et décocher _'Copy projects into workspace_'. Enfin, cliquer sur Finish, le projet apparaît dans le workspace courant.
+
+image:images/importProject.png[align="center", pdfwidth='50%']
+
+
+WARNING: Le projet contenant les images doit être ouvert.
+
+==== Comment lier une image à un composant physique ?
+
+La détermination de l'image à utiliser pour chaque élément est calculée à partir d'informations positionnées  dans les property values.
+
+Pour chaque composant physique où l'on veut afficher une image, il faut lui appliquer une property value de type String via la référence _'appliedPropertyValues_'. Cette property value doit être préalablement créée dans le modèle Capella et avoir son _'name_' et sa _'value_' renseignés via la vue Propriétés.
+Cette property value de type String aura :
+
+* le nom _'schematic.image_' 
+* la valeur de la clé renseignée dans le fichier de configuration. La clé correspond à une seule image.
+
+image:images/componentWithImagePV.png[align="center", pdfwidth='50%']
+
+La correspondance entre la valeur de cette property value et les images à afficher est faite dans un fichier de configuration, un fichier de propriétés au format texte. Une propriété possède une clé et une valeur. La clé est la valeur renseignée dans la property value et la valeur est le chemin vers l'image depuis le projet du workspace.
+
+Voici un exemple : si un composant physique 
+
+* possède un property value de type String _'schematic.image=moteur_' 
+* et que le fichier de configuration contient la propriété _'moteur=MesImages/moteur.png_'
+* le composant physique sera affiché avec l'image _'MesImages/moteur.png_'
+
+==== Comment utiliser le fichier de configuration ?
+
+Le fichier de configuration est un fichier de propriétés au format texte avec l'extension _'.cfg_'. Une propriété possède une clé et une valeur, séparés par _'=_'. 
+
+Ce fichier pourra être édité à volonté par les utilisateurs. Les images représentant les différents concepts métiers sont configurables sans nécessiter aucun développement additionnel. En parallèle, la bibliothèque des images métier peut être réalisée en autonomie par les utilisateurs.
+
+Voici un exemple de fichier de configuration : 
+
+image:images/exConfigurationFile.png[align="center", pdfwidth='50%']
+
+Pour que le fichier de configuration soit pris en compte pour le chargement des images, il faut aller le renseigner dans les préférences, menu _'Window > Preferences > Capella > Schematic_' et saisir le chemin du fichier de configuration.
+
+image:images/configurationFilePreferences.png[align="center", pdfwidth='50%']
+
+WARNING: Si le chemin de l'image n'est pas valide, l'élément graphique Capella ne changera pas et restera un rectangle de couleur.
+
+Les images de la bibliothèque doivent être à la bonne taille car aucun ratio n'est appliqué dans la définition du style de l'image.
+
+Les formats d'image supportés sont _'jpg, png et svg_'. Pour information, une image jpg ou png avec une résolution de 96 ppp et une taille de 96x96 pixels s'affiche correctement sur le diagramme. Le fond de l'image doit être transparent pour que les liens et les ports arrivent jusqu'au dessin de l'image.
+
+Le fichier de configuration doit être encodé en _'UTF-8_'. Le chemin des images ne doit pas contenir de caractères interdits dans les noms de fichiers (<, >, : , " , |, ? ,*, saut de ligne) et le séparateur doit être le _'/_'.
+
+Une seul fichier de configuration peut être pris en compte pour la configuration de ce point de vue.
+
+==== Mise à jour de l'image
+
+L'utilisateur peut la valeur de la property value _'schematic.image'_ pour changer l'image. Toutefois, il faut une action utilisateur pour que l'image change dans le diagramme, soit :
+
+* rouvrir le diagramme,
+* désactiver et réactiver le layer des images,
+* redémarrer Capella (si les 2 premières actions ne fonctionnent pas).
+
+==== Affichage des labels
+
+Pour un souci de lisibilité, lorsque les images sont affichées dans le composant physique, les labels ne sont plus affichés à l'intérieur du noeud mais à l'extérieur. C'est en fait un noeud en bordure avec une image transparente qui affiche le label des composants. Il est par défaut positionné au nord de l'image. S'il n'y a pas de place au nord de l'image, le label sera affiché sur un autre bord. L'utilisateur peut aussi déplacer le label.
+
+
+WARNING: L'image et son label sont deux noeuds distincts -> les actions possibles sur le noeud du label ne seront pas les mêmes que celles disponibles sur l'image. Il faut donc bien sélectionner l'image et non son label pour travailler sur le composant.
+ 
+
+=== Affichage des RTPFs[[rtpf]]
+
+Pour activer le layer qui affiche les RTPFs dans un PAB, il faut cliquer sur le bouton _'Layers_' de la tabbar du diagramme et choisir _'Schematic RTPF_'.
+
+image:images/layerRTPF.png[align="center", pdfwidth='50%']
+
+Ainsi, à l'activation de ce layer, si un composant physique ou un lien physique possède la propriété RTPF, le label sera le RTPF (sans le nom). Si ce n'est pas le cas, le nom sera affiché. 
+
+image:images/exComponentRTPF.png[align="center", pdfwidth='50%']
+
+
+==== Comment ajouter la propriété RTPF ?
+
+Cette propriété est calculée à partir d'informations positionnées sur les property values.
+
+Pour chaque composant physique / lien physique où l'on veut afficher le RTPF, il faut lui appliquer une property value de type String via la référence _'appliedPropertyValues_'. Cette property value doit être préalablement créée dans le modèle Capella et avoir son _'name_' et sa _'value_' renseignés via la vue Propriétés.
+Cette property value de type String aura :
+
+* le nom _'RTPF_' 
+* la valeur du RTPF.
+
+image:images/componentWithRTPF_PV.png[align="center", pdfwidth='50%']
+
+=== Affichage des propriétés définies par le fichier de configuration[[labels]]
+
+Pour activer le layer qui affiche les données définies par le fichier de configuration dans un PAB, il faut cliquer sur le bouton _'Layers_' de la tabbar du diagramme et choisir _'Schematic Other Labels_'
+
+image:images/layerLabelConf.png[align="center", pdfwidth='50%']
+
+Ainsi, à l'activation de ce layer, un composant physique ou un lien physique qui a une ou plusieurs propriétés définies dans le fichier de configuration, affichera leurs valeurs en suffixe de son label.
+
+image:images/exComponentLabels.png[align="center", pdfwidth='50%']
+
+Le séparateur _' - _' n'est pas modifiable.
+
+==== Comment ajouter les propriétés ?
+
+Comme pour le layer RTPF, les propriétés sont calculées à partir des informations positionnées dans les property values.
+
+Pour chaque composant physique / lien physique où l'on veut afficher une propriété, il faut lui appliquer une property value de type String via la référence _'appliedPropertyValues_'. Cette property value doit être préalablement créée dans le modèle Capella et avoir son _'name_' et sa _'value_' renseignés via la vue Propriétés.
+Cette property value de type String aura :
+
+* le nom de la propriété : il doit être le même que celui renseigné dans le fichier de configuration, 
+* la valeur de la propriété.
+
+Voici un exemple : si un composant physique 
+
+* possède un property value de type String _'diametre=10mm_'
+* possède un property value de type String _'tension=5V_' 
+* et que le fichier de configuration contient la propriété _'schematic.labels=diametre,tension_'
+* le label du composant physique sera suffixé par _'10mm_' et _'5V_'.
+
+image:images/componentWithLabels_PV.png[align="center", pdfwidth='50%']
+
+==== Comment utiliser le fichier de configuration ?
+
+Le fichier de configuration est le même que pour la configuration des images. C'est un fichier de propriétés au format texte avec l'extension _'.cfg_'. Une propriété possède une clé et une valeur, séparés par _'=_'.
+
+Ce fichier pourra être édité à volonté par les utilisateurs.
+
+Voici un exemple de fichier de configuration, les propriétés affichées dans le label sont définies par la clé _'schematic.labels_' et le séparateur des différentes propriétés à afficher doit être la _',_'. 
+
+image:images/exLabelConfigurationFile.png[align="center", pdfwidth='50%']
+
+Pour que le fichier de configuration soit pris en compte, il faut aller le renseigner dans les préférences, menu _'Window > Preferences > Capella > Schematic_' et saisir le chemin du fichier de configuration.
+
+image:images/configurationFilePreferences.png[align="center", pdfwidth='50%']
+
+Le fichier de configuration doit être encodé en _'UTF-8_'. 
+
+Une seul fichier de configuration peut être pris en compte pour la configuration des images et des labels dans ce point de vue.
+
+=== Activation des layers sur les labels[[layers]]
+
+Voici le comportement de l'affichage des labels en fonction des layers qui sont activés :
+
+image:images/tableLayersActivation.png[align="center", pdfwidth='50%']
+
+Voici un exemple avec les trois layers activés, _'Schematic Name_', _'Schematic RTPF_' et _'Schematic Other Labels_', le label sera le nom suffixé par toutes les valeurs des property values qui correspondent aux layers et qui sont appliquées à l'élément.
+
+image:images/componentWithRTPFAndLabels_PV.png[align="center", pdfwidth='50%']
+
+Le séparateur _' - _' n'est pas modifiable.
+
+=== Actions de transformation des images[[actions]]
+
+Des actions de transformation des images sont disponibles sur les images des composants physiques du layer  _'Schematic Name_' :
+
+image:images/exActions.png[align="center", pdfwidth='50%']
+
+Voici ce que  ça donne avec l'image du clapet :
+
+image:images/actionsTransformation.png[align="center", pdfwidth='50%']
+
+L'information de la position de l'image est stockée dans une property value dont le nom est _'schematic.image.position_'. Si celle-ci venait à être supprimée par l'utilisateur, l'image serait de nouveau affichée dans sa position de départ.
+
+image:images/actionPV.png[align="center", pdfwidth='50%']
+
+
+WARNING: La position de l'image est toujours calculée depuis l'image initiale. Ainsi, si l'utilisateur fait, par exemple, 2 fois de suite une rotation de 90 degrés, l'image restera positionné à 90 degrés, elle ne sera pas positionnée à 180°.
+
+
+WARNING: Les actions de transformation ne sont pas disponibles pour les images de type svg.
+
+
+WARNING: Les actions de transformation sont disponibles uniquement à partir de la sélection du noeud affichant l'image et ne sont pas disponibles à partir de la sélection du label.
+
+
+

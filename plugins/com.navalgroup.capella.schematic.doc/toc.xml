@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8' ?>
+<!-- 
+    Copyright (c) 2021 Naval Group SA.
+    All right reserved. This program and the accompanying materials are made 
+    available under the terms of the Eclipse Public License 2.0
+    which is available at https://www.eclipse.org/legal/epl-2.0/
+
+    Contributors:
+        Obeo - initial API and implementation
+-->
+
+<toc label="Point de vue sur la schématique métier" link_to="schematicViewpoint" topic="pages/index.html">
+  <topic href="pages/user-guide.html" label="Guide utilisateur">
+  <topic href="pages/user-guide.html#definition" label="Définition"/>
+  <topic href="pages/user-guide.html#viewpoint" label="Point de vue">
+   	<topic href="pages/user-guide.html#metier" label="Affichage de la schématique métier"/>
+   	<topic href="pages/user-guide.html#rtpf" label="Affichage des RTPFs"/>
+   	<topic href="pages/user-guide.html#labels" label="Activation des layers sur les labels"/>
+   	<topic href="pages/user-guide.html#actions" label="Actions de transformation des images"/>
+  </topic>
+   </topic>
+</toc>
